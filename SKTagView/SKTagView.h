@@ -15,6 +15,8 @@
 @property (assign, nonatomic) CGFloat interitemSpacing;
 @property (assign, nonatomic) CGFloat preferredMaxLayoutWidth;
 @property (assign, nonatomic) BOOL singleLine;
+/// Should view hierarchy start building from bottom to top?
+@property (assign, nonatomic) BOOL buildFromBottom;
 @property (copy, nonatomic, nullable) void (^didTapTagAtIndex)(NSUInteger index);
 
 - (void)addTag: (nonnull SKTag *)tag;

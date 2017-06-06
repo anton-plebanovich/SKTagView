@@ -117,6 +117,7 @@
     CGFloat currentX = leftPadding;
     
     if (!self.singleLine && self.preferredMaxLayoutWidth > 0) {
+        CGFloat lastViewOriginY = 0;
         for (UIView *view in subviews) {
             CGSize size = view.intrinsicContentSize;
             if (previousView) {
@@ -126,9 +127,15 @@
                     view.frame = CGRectMake(currentX, CGRectGetMinY(previousView.frame), size.width, size.height);
                     currentX += size.width;
                 } else {
-                    CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
-                    view.frame = CGRectMake(leftPadding, CGRectGetMaxY(previousView.frame) + lineSpacing, width, size.height);
-                    currentX = leftPadding + width;
+                    if (self.buildFromBottom) {
+                        CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
+                        view.frame = CGRectMake(leftPadding, CGRectGetMinY(previousView.frame) - lineSpacing - size.height, width, size.height);
+                        currentX = leftPadding + width;
+                    } else {
+                        CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
+                        view.frame = CGRectMake(leftPadding, CGRectGetMaxY(previousView.frame) + lineSpacing, width, size.height);
+                        currentX = leftPadding + width;
+                    }
                 }
             } else {
                 CGFloat width = MIN(size.width, self.preferredMaxLayoutWidth - leftPadding - rightPadding);
@@ -137,6 +144,13 @@
             }
             
             previousView = view;
+            lastViewOriginY = CGRectGetMinY(view.frame);
+        }
+        
+        if (lastViewOriginY < 0) {
+            for (UIView *view in subviews) {
+                view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y - lastViewOriginY + lineSpacing, view.frame.size.width, view.frame.size.height);
+            }
         }
     } else {
         for (UIView *view in subviews) {
