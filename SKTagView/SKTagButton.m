@@ -43,6 +43,8 @@
     
     btn.layer.cornerRadius = tag.cornerRadius;
     btn.layer.masksToBounds = YES;
+    btn.accessibilityTraits = UIAccessibilityTraitButton;
+    btn.accessibilityIdentifier = "tag";
     
     return btn;
 }
